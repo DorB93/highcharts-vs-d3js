@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, Input} from '@angular/core';
 
 @Component({
   selector: 'app-nodes-display',
@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./nodes-display.component.scss']
 })
 export class NodesDisplayComponent {
-
+  @Input() name: string = '';
 }
