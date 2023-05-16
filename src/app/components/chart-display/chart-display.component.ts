@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import * as Highcharts from 'highcharts';
 import HighchartsNetworkgraph from 'highcharts/modules/networkgraph';
+// @ts-ignore
+import * as icon from './../../../assets/icons/nodejs.svg'
 
 HighchartsNetworkgraph(Highcharts);
 
@@ -66,6 +68,7 @@ export class ChartDisplayComponent implements OnInit {
   //     }]
   //   }]
   // };
+
   // generalSeries = {
   //   ///////////// general options for all series//////////////
   //   allowPointSelect: false, // => boolean, Allow this series' points to be selected by clicking on the graphic (columns, point markers, pie slices, map areas etc).
@@ -259,144 +262,179 @@ export class ChartDisplayComponent implements OnInit {
   nodes =
     [
       {id: '1', name: 'Entry Point', alert: true, to: ['API1', 'API2', 'API3']},
-      {id: 'API1', name: 'Node Server', alert: true, to: ['MGUS1', 'MSSQL1']},
-      {id: 'API2', name: 'Jango', alert: false, to: ['SQL1']},
-      {id: 'API3', name: 'Azure studio', alert: false, to: ['MDB1']},
+      {id: 'API1', name: 'NodeJs', alert: true, to: ['MGUS1', 'MSSQL1']},
+      {id: 'API2', name: 'Django', alert: false, to: ['SQL1']},
+      {id: 'API3', name: 'Azure', alert: false, to: ['MDB1']},
       {id: 'MGUS1', name: 'Mongoose', alert: true, to: ['MDB2']},
       {id: 'MSSQL1', name: 'MSSQL', alert: true, to: ['SQL2']},
-      {id: 'SQL1', name: 'MySQL1', alert: false, to: []},
+      {id: 'SQL1', name: 'MySQL', alert: false, to: []},
       {id: 'SQL2', name: 'MySQL', alert: true, to: []},
-      {id: 'MDB1', name: 'MongoDB1', alert: false, to: []},
-      {id: 'MDB2', name: 'MongoDB2', alert: true, to: []},
+      {id: 'MDB1', name: 'MongoDB', alert: false, to: []},
+      {id: 'MDB2', name: 'MongoDB', alert: true, to: []},
     ];
-/*
- [
-          {
-            id: "1",
-            name: "Entry Point",
-            marker: {
-              radius: 30
-            },
-            color: that.dirDist50
-          },
-          {
-            id: "Api 1",
-            name:'Dor',
-            marker: {
-              radius: 10
-            },
-            color: that.dirDistLess10
-          },
-          {
-            id: "Api 2",
-            name: "Api 2",
-            marker: {
-              radius: 30
-            },
-            color: that.dirDist50
-          },
-          {
-            id: "Node Server",
-            name: "Node Server",
-            marker: {
-              radius: 20
-            },
-            color: that.dirDist10
-          },
-          {
-            id: "Jango Server",
-            name: "Jango Server",
-            marker: {
-              radius: 30
-            },
-            color: that.dirDist50
-          },
-          {
-            id: "Azure studio",
-            name: "Azure studio",
-            marker: {
-              radius: 10
-            },
-            color: that.dirDistLess10
-          },
-          {
-            id: "A",
-            name: "A",
-            marker: {
-              radius: 10
-            },
-            color: that.dirDistLess10
-          },
-          {
-            id: "B",
-            name: "B",
-            marker: {
-              radius: 10
-            },
-            color: that.dirDistLess10
-          },
-          {
-            id: "C",
-            name: "C",
-            marker: {
-              radius: 10
-            },
-            color: that.dirDistLess10
-          },
-          {
-            id: "D",
-            name: "D",
-            marker: {
-              radius: 20
-            },
-            color: that.dirDist10
-          },
-          {
-            id: "H",
-            name: "H",
-            marker: {
-              radius: 10
-            },
-            color: that.dirDistLess10
-          },
-          {
-            id: "G",
-            name: "G",
-            marker: {
-              radius: 10
-            },
-            color: that.dirDistLess10
-          },
-          {
-            id: "I",
-            name: "I",
-            marker: {
-              radius: 10
-            },
-            color: that.dirDistLess10
-          },
-          {
-            id: "J",
-            name: "J",
-            marker: {
-              radius: 20
-            },
-            color: that.dirDist10
-          }
-        ]
 
- */
+  /*
+   [
+            {
+              id: "1",
+              name: "Entry Point",
+              marker: {
+                radius: 30
+              },
+              color: that.dirDist50
+            },
+            {
+              id: "Api 1",
+              name:'Dor',
+              marker: {
+                radius: 10
+              },
+              color: that.dirDistLess10
+            },
+            {
+              id: "Api 2",
+              name: "Api 2",
+              marker: {
+                radius: 30
+              },
+              color: that.dirDist50
+            },
+            {
+              id: "Node Server",
+              name: "Node Server",
+              marker: {
+                radius: 20
+              },
+              color: that.dirDist10
+            },
+            {
+              id: "Jango Server",
+              name: "Jango Server",
+              marker: {
+                radius: 30
+              },
+              color: that.dirDist50
+            },
+            {
+              id: "Azure studio",
+              name: "Azure studio",
+              marker: {
+                radius: 10
+              },
+              color: that.dirDistLess10
+            },
+            {
+              id: "A",
+              name: "A",
+              marker: {
+                radius: 10
+              },
+              color: that.dirDistLess10
+            },
+            {
+              id: "B",
+              name: "B",
+              marker: {
+                radius: 10
+              },
+              color: that.dirDistLess10
+            },
+            {
+              id: "C",
+              name: "C",
+              marker: {
+                radius: 10
+              },
+              color: that.dirDistLess10
+            },
+            {
+              id: "D",
+              name: "D",
+              marker: {
+                radius: 20
+              },
+              color: that.dirDist10
+            },
+            {
+              id: "H",
+              name: "H",
+              marker: {
+                radius: 10
+              },
+              color: that.dirDistLess10
+            },
+            {
+              id: "G",
+              name: "G",
+              marker: {
+                radius: 10
+              },
+              color: that.dirDistLess10
+            },
+            {
+              id: "I",
+              name: "I",
+              marker: {
+                radius: 10
+              },
+              color: that.dirDistLess10
+            },
+            {
+              id: "J",
+              name: "J",
+              marker: {
+                radius: 20
+              },
+              color: that.dirDist10
+            }
+          ]
+
+   */
   constructor() {
   }
-  getNodes(){
-    return this.nodes.map(node =>{
-      const marker = {
-        radius: node.alert ? 20 : 10
+
+  generateIcons() {
+    const nodeNames = Array.from(new Set(this.nodes.map(node => node.name)))
+    const that = this
+    nodeNames.forEach(name => {
+      that.Highcharts.SVGRenderer.prototype.symbols[name] = function () {
+        console.log(name)
+        // @ts-ignore
+        return that.svgIcons[name];
       }
-      return{ id: node.id, name:node.name, color: node.alert ? 'red' : 'blue', marker}
+    })
+  }
+
+  // @ts-ignore
+  getNodes() {
+    return this.nodes.map(node => {
+      const marker = node.name === 'Entry Point' ? {
+        className: `graph-icon ${node.name.toLowerCase()}`,
+        symbol: `circle`,
+        height: 30,
+        width: 30
+      } : {
+        className: `graph-icon ${node.name.toLowerCase()}`,
+        symbol: `url(./../../assets/icons/${node.name.toLowerCase()}.png)`,
+        height: 50,
+        width: 50
+      }
+      return {
+        id: node.id,
+        name: node.name,
+        className: node.name,
+        color: node.alert ? 'red' : 'blue',
+        marker
+      }
     });
 
   }
+
+// @ts-ignore
+  getSVGLink(name, that) {
+    return that.svgIcons[name]
+  }
+
   getConnections() {
     return this.nodes.reduce((pre: [string, string][], node) => {
       if (node.to && node.to.length > 0) {
@@ -409,7 +447,6 @@ export class ChartDisplayComponent implements OnInit {
   }
 
   ngOnInit() {
-    const that = this;
     // @ts-ignore
     this.Highcharts.chart(this.chartId, {
       chart: {
@@ -428,18 +465,34 @@ export class ChartDisplayComponent implements OnInit {
         networkgraph: {
           keys: ['from', 'to'],
           layoutAlgorithm: {
-            enableSimulation: true,
+            enableSimulation: false,
             integration: 'verlet',
             linkLength: 100
+          },
+          marker: {
+            radius: 15,
+          },
+          point: {
+            events: {
+              drag: false,
+              drop: false
+            }
           }
         }
       },
       series: [{
+        type: 'networkgraph',
         id: 'language-tree',
+        cursor: 'pointer',
+        point: {
+          events: {
+            drag: false
+          }
+        },
         dataLabels: {
           enabled: true,
           textPath: {
-            enabled: true
+            enabled: false
           },
           format: '{point.name}',
           linkFormat: '',
