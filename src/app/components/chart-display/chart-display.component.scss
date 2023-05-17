@@ -1,5 +1,10 @@
-:host  {
-  background-color: white;
+.page{
+  background: white;
+  --highcharts-background-color,
+  .highcharts-plot-background,
+  {
+    background-color: white;
+  }
 }
 .my-network-graph{
   background-color: azure;

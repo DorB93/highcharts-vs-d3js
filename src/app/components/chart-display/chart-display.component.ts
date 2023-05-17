@@ -23,9 +23,7 @@ HighchartsNetworkgraph(Highcharts);
 export class ChartDisplayComponent implements OnInit {
   chartId = 'chart-container'
   Highcharts: typeof Highcharts = Highcharts;
-  dirDist50 = "#E8544E";
-  dirDist10 = "#FFD265";
-  dirDistLess10 = "#2AA775";
+
   // chartOptions: Highcharts.Options = {
   //   chart: {
   //     type: 'networkgraph',
@@ -393,46 +391,31 @@ export class ChartDisplayComponent implements OnInit {
   constructor() {
   }
 
-  generateIcons() {
-    const nodeNames = Array.from(new Set(this.nodes.map(node => node.name)))
-    const that = this
-    nodeNames.forEach(name => {
-      that.Highcharts.SVGRenderer.prototype.symbols[name] = function () {
-        console.log(name)
-        // @ts-ignore
-        return that.svgIcons[name];
-      }
-    })
-  }
-
-  // @ts-ignore
   getNodes() {
     return this.nodes.map(node => {
-      const marker = node.name === 'Entry Point' ? {
+      const marker = {
         className: `graph-icon ${node.name.toLowerCase()}`,
-        symbol: `circle`,
-        height: 30,
-        width: 30
-      } : {
-        className: `graph-icon ${node.name.toLowerCase()}`,
-        symbol: `url(./../../assets/icons/${node.name.toLowerCase()}.png)`,
+        symbol: `url(./../../assets/icons/${node.name === 'Entry Point' ? 'alert' : node.name.toLowerCase()}.png)`,
         height: 50,
         width: 50
       }
+      const events = {
+        click: function () {
+          const text = node.to?.length > 0 ? `, that connected to: ${node.to.join(', ')}.` : '.'
+          alert(`You have clicked the ${node.id}${text}`)
+        }
+      }
+
       return {
         id: node.id,
         name: node.name,
         className: node.name,
         color: node.alert ? 'red' : 'blue',
-        marker
+        marker,
+        events,
       }
     });
 
-  }
-
-// @ts-ignore
-  getSVGLink(name, that) {
-    return that.svgIcons[name]
   }
 
   getConnections() {
@@ -463,6 +446,7 @@ export class ChartDisplayComponent implements OnInit {
       },
       plotOptions: {
         networkgraph: {
+          draggable: false,
           keys: ['from', 'to'],
           layoutAlgorithm: {
             enableSimulation: false,
@@ -494,7 +478,7 @@ export class ChartDisplayComponent implements OnInit {
           textPath: {
             enabled: false
           },
-          format: '{point.name}',
+          format: '',
           linkFormat: '',
           allowOverlap: true
         },
