@@ -5,3 +5,27 @@
   height: 100%;
   width: 100%;
 }
+
+.node-tooltip{
+
+}
+
+.link-tooltip{
+
+}
+.graph-tooltip{
+  position: absolute;
+  background-color: blanchedalmond;
+  border-radius: 10px;
+  padding: 10px;
+  color: black;
+  text-align: center;
+  width: 200px;
+  height: auto;
+  transition: all linear 500ms;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.26);
+
+  &.hidden {
+    display: none;
+  }
+}
