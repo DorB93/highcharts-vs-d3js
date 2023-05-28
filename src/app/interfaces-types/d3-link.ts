@@ -5,5 +5,6 @@ export interface D3Link extends SimulationLinkDatum<D3Node> {
   source: D3Node | string;
   target: D3Node | string;
   color: string;
+  alert: boolean;
 
 }
