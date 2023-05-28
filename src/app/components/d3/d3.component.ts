@@ -1,8 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import * as d3 from 'd3'
-import nodesData from "../../data/NodesData";
-// import {D3Link} from "./d3-link";
-// import {D3Node} from "./d3-node";
+
 @Component({
   selector: 'app-d3',
   templateUrl: './d3.component.html',
