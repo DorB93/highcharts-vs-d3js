@@ -23,6 +23,7 @@ export class ForceLayoutComponent implements OnInit {
   private nodesSelection!: D3.Selection<D3.BaseType, D3NodeInit, SVGElement, D3NodeInit>;
   private linksSelection!: D3.Selection<D3.BaseType, D3LinkInit, SVGElement, D3LinkInit>;
   private textsSelection!: D3.Selection<D3.BaseType, D3NodeInit, SVGElement, D3NodeInit>;
+  private tooltipSelection!: D3.Selection<D3.BaseType, D3LinkInit, HTMLElement, D3LinkInit>;
 
   constructor() {
 
@@ -31,6 +32,7 @@ export class ForceLayoutComponent implements OnInit {
   ngOnInit() {
     this.setNodesData();
     this.setLinksData();
+    this.tooltipSelection = D3.select('#tooltip-container')
     this.svg = D3.select("#force_graph").append('svg')
       .attr('width', this.width)
       .attr('height', this.height)
@@ -40,6 +42,7 @@ export class ForceLayoutComponent implements OnInit {
   initGraph() {
 
     this.runForceSimulation()
+
     // Per-type markers, as they don't inherit styles.
     this.addArrowHeadMarker()
 
@@ -158,27 +161,24 @@ export class ForceLayoutComponent implements OnInit {
       .attr('stroke-width', (link: D3LinkInit) => link.alert ? 4 : 3)
       .style('stroke', (link: D3LinkInit) => link.color)
       .style('cursor', 'pointer')
-      .on('mouseover', showTooltip)
-      .on('mousemove', showTooltip)
-      .on('mouseleave', hideTooltip)
+      .on('mouseover', this.showTooltip.bind(this))
+      .on('mousemove', this.showTooltip.bind(this))
+      .on('mouseleave', this.hideTooltip.bind(this))
       .join("path")
       .attr("marker-end", (link: D3LinkInit) => `url(#arrow-${link.alert ? 1 : 2})`)
 
-    const tooltip = D3.select('#tooltip-container')
+  }
 
-    function showTooltip(event: MouseEvent, link: D3LinkInit) {
-      const xPos = event.clientX
-      const yPos = event.clientY
-      tooltip
-        .attr('class', 'graph-tooltip')
-        .style('left', `${xPos - 100}px`)
-        .style('top', `${yPos - 60}px`)
-        .html(`From ${link.source.name} to ${link.target.name}. SG : some group name`)
-    }
+  showTooltip(event: MouseEvent, link: D3LinkInit) {
+    this.tooltipSelection
+      .attr('class', 'graph-tooltip')
+      .style('left', `${event.clientX - 100}px`)
+      .style('top', `${event.clientY - 60}px`)
+      .html(`From ${link.source.name} to ${link.target.name}. SG : some group name`)
+  }
 
-    function hideTooltip() {
-      tooltip.attr('class', 'graph-tooltip hidden')
-    }
+  hideTooltip() {
+    this.tooltipSelection.attr('class', 'graph-tooltip hidden')
   }
 
   linkArc(d: D3LinkInit) {
