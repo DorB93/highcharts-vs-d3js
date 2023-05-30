@@ -18,16 +18,19 @@ export class ForceLayoutComponent implements OnInit {
   private svg!: any;
   private width: number = 960;
   private height: number = 700;
-  private nodes: D3Node[] = [];
-  private links: D3Link[] = [];
+  private nodesArr: D3Node[] = [];
+  private linksArr: D3Link[] = [];
+  private nodesSelection!: D3.Selection<D3.BaseType, D3NodeInit, SVGElement, D3NodeInit>;
+  private linksSelection!: D3.Selection<D3.BaseType, D3LinkInit, SVGElement, D3LinkInit>;
+  private textsSelection!: D3.Selection<D3.BaseType, D3NodeInit, SVGElement, D3NodeInit>;
 
   constructor() {
 
   }
 
   ngOnInit() {
-    this.setNodes();
-    this.setLinks();
+    this.setNodesData();
+    this.setLinksData();
     this.svg = D3.select("#force_graph").append('svg')
       .attr('width', this.width)
       .attr('height', this.height)
@@ -35,24 +38,75 @@ export class ForceLayoutComponent implements OnInit {
   }
 
   initGraph() {
-    const that = this
-    this.simulation = D3.forceSimulation(this.nodes)
-      .force('link',
-        D3.forceLink()     // @ts-ignore
-          .id((d) => d.id).distance(60)
-          .links(this.links))
+
+    this.runForceSimulation()
+    // Per-type markers, as they don't inherit styles.
+    this.addArrowHeadMarker()
+
+    this.addLinksToSVG()
+
+    this.addNodeToSVG()
+
+    this.addLabelsToNodesSVG()
+  }
+
+  runForceSimulation() {
+    this.simulation = D3.forceSimulation(this.nodesArr)
       .force("charge", D3.forceManyBody().strength(-1000))
       .force("center", D3.forceCenter(this.width / 2, this.height / 2))
+      .force('link',
+        D3.forceLink()     // @ts-ignore
+          .id((d) => d.id).distance(100)
+          .links(this.linksArr))
       .force("x", D3.forceX())
       .force("y", D3.forceY())
+      .on("tick", this.ticked.bind(this))
+  }
 
-    // Per-type markers, as they don't inherit styles.
+  ticked() {
+    this.linksSelection
+      .attr('d', this.linkArc)
+
+    this.nodesSelection
+      .attr('x', (node: D3NodeInit) => node.x)
+      .attr('y', (node: D3NodeInit) => (node.y && node.y - 15))
+    this.textsSelection
+      .attr('x', (node: D3NodeInit) => node.x)
+      .attr('y', (node: D3NodeInit) => (node.y && node.y - 15))
+  }
+
+  setNodesData() {
+    nodesData.forEach(node => {
+      this.nodesArr.push({
+        id: node.id,
+        name: node.name,
+        alert: node.alert
+      })
+    })
+  }
+
+  setLinksData() {
+    nodesData.forEach((node) => {
+      node.to.forEach(nId => {
+        const targetNode = nodesData.find(n => n.id === nId)
+        this.linksArr.push({
+          source: node.id,
+          target: nId,
+          color: (node.alert && targetNode?.alert) ? 'red' : 'green',
+          alert: !!(node.alert && targetNode?.alert)
+        });
+      })
+    }, [])
+  }
+
+  addArrowHeadMarker() {
     this.svg.append("defs").selectAll("marker")
       .data([1, 2])
       .join("marker")
       .attr("id", (numType: number) => `arrow-${numType}`)
-      .attr("fill", (numType: number) => `arrow-${numType}`)
+      .attr("fill", (numType: number) => numType === 1 ? 'red' : 'green')
       .attr("viewBox", "0 -5 10 10")
+      .style("cursor", "pointer")
       .attr("refX", 7)
       .attr("refY", -0.5)
       .attr("markerWidth", 6)
@@ -60,30 +114,13 @@ export class ForceLayoutComponent implements OnInit {
       .attr("orient", "auto")
       .append("path")
       .attr("d", "M0,-5L10,0L0,5");
+  }
 
-    const link = this.svg.append('g')
-      .attr("fill", "none")
-      .selectAll("path")
-      .data(this.links)
-      .join("path")
-      .attr('stroke-width', (link: D3LinkInit) => link.alert ? 4 : 3)
-      .style('stroke', (link: D3LinkInit) => link.color)
-      .on('mouseover', onMouseOver)
-      .on('mousemove', onMouseOver)
-      .on('mouseleave', hideTooltip)
-      .join("path")
-      .attr("marker-end", (link: D3LinkInit) => `url(#arrow-${link.alert ? 1 : 2})`)
-
-    function onMouseOver(event: MouseEvent, link: D3LinkInit) {
-      // console.log({event})
-      // console.log({link})
-      showTooltip(event, link)
-    }
-
-    const node = this.svg.append('g')
+  addNodeToSVG() {
+    this.nodesSelection = this.svg.append('g')
       .attr('class', 'nodes')
       .selectAll('image')
-      .data(this.nodes)
+      .data(this.nodesArr)
       .enter()
       .append('image')
       .attr("xlink:href", (node: D3Node) =>
@@ -92,12 +129,13 @@ export class ForceLayoutComponent implements OnInit {
       .attr("width", "40px")
       .attr("height", "40px")
       .attr("fill", (node: D3Node) => node.alert ? "red" : "blue")
-    console.log({node})
-    console.log({link})
 
-    const text = this.svg.append('g')
+  }
+
+  addLabelsToNodesSVG() {
+    this.textsSelection = this.svg.append('g')
       .selectAll('text')
-      .data(this.nodes)
+      .data(this.nodesArr)
       .enter()
       .append("text")
       .attr('class', 'node-title')
@@ -109,8 +147,24 @@ export class ForceLayoutComponent implements OnInit {
         return n.name
       });
 
+  }
+
+  addLinksToSVG() {
+    this.linksSelection = this.svg.append('g')
+      .attr("fill", "none")
+      .selectAll("path")
+      .data(this.linksArr)
+      .join("path")
+      .attr('stroke-width', (link: D3LinkInit) => link.alert ? 4 : 3)
+      .style('stroke', (link: D3LinkInit) => link.color)
+      .style('cursor', 'pointer')
+      .on('mouseover', showTooltip)
+      .on('mousemove', showTooltip)
+      .on('mouseleave', hideTooltip)
+      .join("path")
+      .attr("marker-end", (link: D3LinkInit) => `url(#arrow-${link.alert ? 1 : 2})`)
+
     const tooltip = D3.select('#tooltip-container')
-    console.log({tooltip})
 
     function showTooltip(event: MouseEvent, link: D3LinkInit) {
       const xPos = event.clientX
@@ -125,51 +179,17 @@ export class ForceLayoutComponent implements OnInit {
     function hideTooltip() {
       tooltip.attr('class', 'graph-tooltip hidden')
     }
-
-    this.simulation.on("tick", function () {
-      link
-        .attr('d', that.linkArc)
-
-      node
-        .attr('x', (node: D3Node) => node.x)
-        .attr('y', (node: D3Node) => (node.y && node.y - 15))
-      text
-        .attr('x', (node: D3Node) => node.x)
-        .attr('y', (node: D3Node) => (node.y && node.y - 15))
-    })
-  }
-
-  setNodes() {
-    nodesData.forEach(node => {
-      this.nodes.push({
-        id: node.id,
-        name: node.name,
-        alert: node.alert
-      })
-    })
-  }
-
-  setLinks() {
-    nodesData.forEach((node) => {
-      node.to.forEach(nId => {
-        const targetNode = nodesData.find(n => n.id === nId)
-        this.links.push({
-          source: node.id,
-          target: nId,
-          color: (node.alert && targetNode?.alert) ? 'red' : 'green',
-          alert: !!(node.alert && targetNode?.alert)
-        });
-      })
-    }, [])
   }
 
   linkArc(d: D3LinkInit) {
-    const xSource = d.source.x;
-    const ySource = d.source.y;
 
-    const r = Math.hypot(d.target.x - xSource, d.target.y - ySource);
+    const xStart = d.source.x;
+    const yStart = d.source.y;
 
-    return `M${xSource},${ySource} A${r},${r} 0 0,1 ${d.target.x},${d.target.y}
+
+    const r = Math.hypot(d.target.x - xStart, d.target.y - yStart);
+
+    return `M${xStart},${yStart} A${r},${r} 0 0,1 ${d.target.x},${d.target.y}
   `;
   }
 }
