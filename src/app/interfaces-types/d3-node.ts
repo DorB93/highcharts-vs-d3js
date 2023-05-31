@@ -14,4 +14,5 @@ export interface D3Node extends SimulationNodeDatum{
   name: string;
   nodeSVG?: string| undefined;
   alert: boolean;
+  numTo:number;
 }
