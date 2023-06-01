@@ -51,7 +51,7 @@ export class ForceLayoutComponent implements OnInit {
 
     this.addLinksToSVG();
 
-    this.addNodeDivData();
+    this.addNodeRectData();
 
     this.addNodeToSVG();
   }
@@ -112,7 +112,7 @@ export class ForceLayoutComponent implements OnInit {
 
   }
 
-  addNodeDivData() {
+  addNodeRectData() {
     this.hostDataContainerSelection = this.svg.append("g")
       .attr("class", "data-table")
       .selectAll(".node-div-data")
@@ -197,7 +197,7 @@ export class ForceLayoutComponent implements OnInit {
       .attr("height", "130%");
     const filter2 = defs.append("filter")
       .attr("id", "drop-shadow2")
-      .attr("height", "130%");
+      .attr("height", "140%");
 // SourceAlpha refers to opacity of graphic that this filter will be applied to
 // convolve that with a Gaussian with standard deviation 3 and store result
 // in blur
@@ -206,7 +206,7 @@ export class ForceLayoutComponent implements OnInit {
       .attr("stdDeviation", 3);
     filter2.append("feGaussianBlur")
       .attr("in", "SourceAlpha")
-      .attr("stdDeviation", 2);
+      .attr("stdDeviation", 3);
 
 // translate output of Gaussian blur to the right and downwards with 2px
 // store result in offsetBlur
@@ -285,22 +285,8 @@ export class ForceLayoutComponent implements OnInit {
       link.target.fy = 150 + link.target.index * 100;
     }
     link.target.x = link.source.x + 250;
-    const offset = link.target.y < link.source.y ? -30 : 60;
 
-    const midpointX = (link.source.x + link.target.x) / 2;
-    const midpointY = (link.source.y + link.target.y) / 2;
-
-    const dx = (link.source.x - link.target.x);
-    const dy = (link.source.y - link.target.y);
-
-    const normalise = Math.sqrt((dx * dx) + (dy * dy));
-
-    const offSetX = midpointX + offset * (dy / normalise);
-    const offSetY = midpointY - offset * (dx / normalise);
-    if (link.source.numTo < 2) {
-      return `M${link.source.x},${link.source.y}  L${link.target.x},${link.target.y}`;
-    }
-    return `M${link.source.x},${link.source.y} S${offSetX},${offSetY} ${link.target.x},${link.target.y}`;
+    return `M ${link.source.x} , ${link.source.y} C ${(link.source.x + link.target.x) / 2}, ${link.source.y}  ${(link.source.x + link.target.x) / 2} , ${link.target.y}  ${link.target.x} , ${link.target.y}`
   }
 
   nodeClick() {
