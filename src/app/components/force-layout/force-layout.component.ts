@@ -59,7 +59,6 @@ export class ForceLayoutComponent implements OnInit {
   runForceSimulation() {
     this.simulation = D3.forceSimulation(this.nodesArr)
       .force("charge", D3.forceManyBody().strength(-1500))
-      .force("center", D3.forceCenter(this.width / 2 - 50, this.height / 2))
       .force("link",
         D3.forceLink()     // @ts-ignore
           .id((d) => d.id)
@@ -110,6 +109,7 @@ export class ForceLayoutComponent implements OnInit {
       .attr("height", "60px")
       .attr("fill", (node: D3Node) => node.alert ? "red" : "blue")
       .style("filter", "url(#drop-shadow)");
+
   }
 
   addNodeDivData() {
@@ -285,24 +285,26 @@ export class ForceLayoutComponent implements OnInit {
       link.target.fy = 150 + link.target.index * 100;
     }
     link.target.x = link.source.x + 250;
-    const  offset = 30;
+    const offset = link.target.y < link.source.y ? -30 : 60;
 
-    const  midpointX = (link.source.x + link.target.x) / 2;
-    const  midpointY = (link.source.y + link.target.y) / 2;
+    const midpointX = (link.source.x + link.target.x) / 2;
+    const midpointY = (link.source.y + link.target.y) / 2;
 
-    const  dx = (link.source.x - link.target.x);
-    const  dy = (link.source.y - link.target.y);
+    const dx = (link.source.x - link.target.x);
+    const dy = (link.source.y - link.target.y);
 
-    const  normalise = Math.sqrt((dx * dx) + (dy * dy));
+    const normalise = Math.sqrt((dx * dx) + (dy * dy));
 
-    const  offSetX = midpointX + offset*(dy/normalise);
-    const  offSetY = midpointY - offset*(dx/normalise);
-
-    return "M" + link.source.x + "," + link.source.y +
-      "S" + offSetX + "," + offSetY +
-      " " + link.target.x + "," + link.target.y;
-    //
-    //
-    // return `M ${link.source.x} , ${link.source.y} L  ${link.target.x} , ${link.target.y}`;
+    const offSetX = midpointX + offset * (dy / normalise);
+    const offSetY = midpointY - offset * (dx / normalise);
+    if (link.source.numTo < 2) {
+      return `M${link.source.x},${link.source.y}  L${link.target.x},${link.target.y}`;
+    }
+    return `M${link.source.x},${link.source.y} S${offSetX},${offSetY} ${link.target.x},${link.target.y}`;
   }
+
+  nodeClick() {
+
+  }
+
 }
