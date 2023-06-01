@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {ChartDisplayComponent} from "./components/chart-display/chart-display.component";
-import {D3Component} from "./components/d3/d3.component";
+import {D3Component} from "./components/tree-graph-d3/d3.component";
 import {ForceLayoutComponent} from "./components/force-layout/force-layout.component";
 
 const routes: Routes = [

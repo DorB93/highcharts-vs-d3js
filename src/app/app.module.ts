@@ -7,7 +7,7 @@ import {AppComponent} from './app.component';
 import {ChartDisplayComponent} from './components/chart-display/chart-display.component';
 import {HighchartsChartModule} from 'highcharts-angular';
 import {NavBarComponent} from './components/nav-bar/nav-bar.component';
-import {D3Component} from './components/d3/d3.component';
+import {D3Component} from './components/tree-graph-d3/d3.component';
 import { ForceLayoutComponent } from './components/force-layout/force-layout.component';
 
 @NgModule({

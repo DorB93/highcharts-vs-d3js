@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import * as d3 from 'd3'
 
 @Component({
-  selector: 'app-d3',
+  selector: 'app-tree-graph-d3',
   templateUrl: './d3.component.html',
   styleUrls: ['./d3.component.scss']
 })
@@ -103,13 +103,13 @@ export class D3Component implements OnInit {
 // node.append("path")
 //     .style("stroke", d => d.data.type)
 //     .style("fill", d => d.data.level)
-//     .attr("d", d3.symbol()
+//     .attr("d", tree-graph-d3.symbol()
 //         .size( d=> d.data.value * 30)
 //         .type( d=> {
 //             if (d.data.value >= 9) {
-//                 return d3.symbolCross;
+//                 return tree-graph-d3.symbolCross;
 //             } else if (d.data.value <= 9) {
-//                 return d3.symbolDiamond;
+//                 return tree-graph-d3.symbolDiamond;
 //             }
 //         }));
 
