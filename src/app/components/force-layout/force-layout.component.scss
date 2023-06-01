@@ -4,8 +4,19 @@
   align-items: center;
   height: 100%;
   width: 100%;
+  svg {
+    position: relative;
+  }
 }
-
+.node-div-data{
+  position: absolute;
+  border-radius: 15px;
+  display: block;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.16);
+  height: 75px;
+  width: 150px;
+  z-index: 50;
+}
 .graph-tooltip{
   position: absolute;
   background-color: blanchedalmond;
