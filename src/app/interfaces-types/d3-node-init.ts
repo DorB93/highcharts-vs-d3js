@@ -1,6 +1,6 @@
 import {SimulationNodeDatum} from "d3-force";
 
-export interface D3NodeInit extends SimulationNodeDatum{
+export interface D3NodeInit extends SimulationNodeDatum {
   index: number;
   x: number;
   y: number;
@@ -9,10 +9,13 @@ export interface D3NodeInit extends SimulationNodeDatum{
   fx: number;
   fy: number;
   cx: number;
-  cy: number ;
+  cy: number;
   id: string;
   name: string;
   nodeSVG: string;
   alert: boolean;
-  umTo:number;
+  numTo: number;
+  address: string;
+  source: string;
+
 }
