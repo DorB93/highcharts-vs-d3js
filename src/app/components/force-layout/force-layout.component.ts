@@ -26,6 +26,7 @@ export class ForceLayoutComponent implements OnInit {
   private hostHeaderSelection!: D3.Selection<D3.BaseType, D3NodeInit, SVGElement, D3NodeInit>;
   private hostAddressSelection!: D3.Selection<D3.BaseType, D3NodeInit, SVGElement, D3NodeInit>;
   private hostSourceSelection!: D3.Selection<D3.BaseType, D3NodeInit, SVGElement, D3NodeInit>;
+  private alertNoteSelection!: D3.Selection<D3.BaseType, D3NodeInit, SVGElement, D3NodeInit>;
 
   constructor() {
   }
@@ -58,7 +59,7 @@ export class ForceLayoutComponent implements OnInit {
 
   runForceSimulation() {
     this.simulation = D3.forceSimulation(this.nodesArr)
-      .force("charge", D3.forceManyBody().strength(-1500))
+      .force("charge", D3.forceManyBody().strength(-1700))
       .force("link",
         D3.forceLink()     // @ts-ignore
           .id((d) => d.id)
@@ -98,18 +99,22 @@ export class ForceLayoutComponent implements OnInit {
   addNodeToSVG() {
     this.nodesSelection = this.svg.append("g")
       .attr("class", "nodes")
-      .selectAll("image")
+      .selectAll(".node-icon")
       .data(this.nodesArr)
       .enter()
       .append("image")
+      .attr('class','node-icon')
       .attr("xlink:href", (node: D3Node) =>
         `/assets/svg-icons/${node.name === "Entry Point" ? "entry" : "host"}.svg`)
       .attr("transform", `translate(${-25},${-15})`)
+      .style("cursor","pointer")
       .attr("width", "60px")
       .attr("height", "60px")
       .attr("fill", (node: D3Node) => node.alert ? "red" : "blue")
-      .style("filter", "url(#drop-shadow)");
-
+      .style("filter", "url(#drop-shadow)")
+      .on("click",function(event:MouseEvent,node:D3NodeInit){
+        console.log(node);
+      })
   }
 
   addNodeRectData() {
@@ -130,7 +135,7 @@ export class ForceLayoutComponent implements OnInit {
       .text((node: D3NodeInit) => `${node.name}`)
       .attr("fill", "#14A65C")
       .attr("font-size", "14px")
-      .attr("font", "Open Sans");
+      .attr("font-family", "Open Sans");
 
     this.hostAddressSelection = this.svg.selectAll(".address-text")
       .data(this.nodesArr)
@@ -138,7 +143,7 @@ export class ForceLayoutComponent implements OnInit {
       .text((node: D3NodeInit) => `${node.address}`)
       .attr("fill", "#808080")
       .attr("font-size", "11px")
-      .attr("font", "Open Sans");
+      .attr("font-family", "Open Sans");
 
     this.hostSourceContainerSelection = this.svg.selectAll(".rect-source")
       .data(this.nodesArr)
@@ -155,7 +160,18 @@ export class ForceLayoutComponent implements OnInit {
       .text((node: D3NodeInit) => `${node.source}`)
       .attr("fill", "#1C3136")
       .attr("font-size", "11px")
-      .attr("font", "Open Sans");
+      .attr("font-family", "Open Sans");
+
+    this.alertNoteSelection = this.svg.selectAll('.alert-breach')
+      .data(this.nodesArr)
+      .enter().append('image')
+      .attr("xlink:href", `/assets/svg-icons/alert.svg`)
+      .attr("transform", `translate(${-25},${-15})`)
+      .style("cursor","pointer")
+      .attr("width", "20px")
+      .attr("height", "20px")
+      .style("display", (node: D3Node) => node.alert ? true : "none")
+
   }
 
   addLinksToSVG() {
@@ -274,6 +290,10 @@ export class ForceLayoutComponent implements OnInit {
     this.hostSourceSelection
       .attr("transform", (node: D3NodeInit) => {
         return `translate(${node.x + 28},${node.y + 35})`;
+      });
+    this.alertNoteSelection
+      .attr("transform", (node: D3NodeInit) => {
+        return `translate(${node.x + 135},${node.y + 25})`;
       });
   }
 
